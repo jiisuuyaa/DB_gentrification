@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 import re
+import streamlit as st
 
 # .env 파일에서 환경 변수 로드
 load_dotenv()
