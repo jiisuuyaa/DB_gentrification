@@ -11,7 +11,7 @@ import pandas as pd
 load_dotenv()
 
 # 🔑 OpenAI API 키 불러오기
-openai_api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = st.secrets["openai"]["api_key"]
 
 # 🔹 OpenAI 클라이언트 설정
 client = openai_api_key
