@@ -12,7 +12,7 @@ load_dotenv()
 openai.api_key = st.secrets["openai"]["api_key"]
 
 # OpenAI 클라이언트 설정
-client = openai_api_key
+client = openai.api_key
 
 
 # ✅ 위험 단계별 설명 (사전 정의)
