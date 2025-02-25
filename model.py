@@ -11,7 +11,7 @@ load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
 
 # OpenAI 클라이언트 설정
-client = openai.OpenAI(api_key=openai_api_key)
+client = openai_api_key
 
 
 # ✅ 위험 단계별 설명 (사전 정의)
