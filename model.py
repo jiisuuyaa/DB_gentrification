@@ -55,12 +55,12 @@ def evaluate_consistency(description, cluster):
     결과는 다음 형식으로 제공하세요:
     일관성 점수: [숫자]
     """
-    response = client.chat.completions.create(
+    response = openai.Completion.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0
     )
-    match = re.search(r"일관성 점수:\s*(\d+)", response.choices[0].message.content)
+    match = re.search(r"일관성 점수:\s*(\d+)", response['choices'][0]['message']['content'])
     return int(match.group(1)) if match else 0
 
 
