@@ -128,7 +128,7 @@ def generate_risk_description(dong_name, df, max_attempts=3, min_score=80):
         ],
         temperature=0.2  # 온도를 낮춰서 더 예측 가능한 답변 생성
         )
-        generated_text = response.choices[0].message.content.strip()
+        generated_text = response['choices'][0]['message']['content'].strip()
 
         # 📏 평가 수행
         factual_score = evaluate_factual_accuracy(generated_text, dong_info)
