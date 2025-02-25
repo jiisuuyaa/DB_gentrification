@@ -15,7 +15,7 @@ load_dotenv()
 openai.api_key = st.secrets["openai"]["api_key"]
 
 # 🔹 OpenAI 클라이언트 설정
-client = openai_api_key
+client = openai.api_key
 
 # 📂 XGBoost 모델 불러오기
 xgb_clf  = joblib.load("xgboost_model.pkl")
