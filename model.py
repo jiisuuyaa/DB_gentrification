@@ -55,15 +55,24 @@ def evaluate_consistency(description, cluster):
     결과는 다음 형식으로 제공하세요:
     일관성 점수: [숫자]
     """
-    response = openai.Completion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0
-    )
-    match = re.search(r"일관성 점수:\s*(\d+)", response['choices'][0]['message']['content'])
-    return int(match.group(1)) if match else 0
-
-
+    try:
+        # 최신 API 형식으로 변경
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # gpt-4가 문제가 된다면 다른 모델 사용
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0
+        )
+        
+        # 일관성 점수 추출
+        match = re.search(r"일관성 점수:\s*(\d+)", response['choices'][0]['message']['content'])
+        return int(match.group(1)) if match else 0
+    except openai.error.InvalidRequestError as e:
+        print("Invalid Request Error:", e)
+        return 0
+    except Exception as e:
+        print("Unexpected Error:", e)
+        return 0
+        
 # 📌 OpenAI GPT-4 기반 위험 설명 생성 함수
 def generate_risk_description(dong_name, df, max_attempts=3, min_score=80):
     dong_info = retrieve_data(dong_name, df)
