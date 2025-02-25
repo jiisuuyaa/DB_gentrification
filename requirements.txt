@@ -9,3 +9,4 @@ shapely
 joblib
 xgboost
 scikit-learn
+openai==0.28
