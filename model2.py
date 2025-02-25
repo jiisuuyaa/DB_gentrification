@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import openai
 import xgboost as xgb
 import pandas as pd
+import streamlit as st
 
 
 # 📂 .env 파일에서 환경 변수 로드
