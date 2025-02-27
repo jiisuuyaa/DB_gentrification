@@ -82,7 +82,7 @@ def generate_ai_risk_description(risk_level, region_name, gentrification_index, 
     """
     
     # OpenAI API 호출
-    response = client.chat.completions.create(
+    response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",  # 또는 gpt-4 사용 가능
     messages=[
         {"role": "system", "content": "당신은 젠트리피케이션과 상권 변화를 분석하는 전문가입니다."},
