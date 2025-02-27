@@ -11,8 +11,8 @@ load_dotenv()
 # OpenAI API 키 불러오기
 openai.api_key = st.secrets["openai"]["api_key"]
 
-# OpenAI 클라이언트 설정
-client = openai.api_key
+# # OpenAI 클라이언트 설정
+# client = openai.api_key
 
 
 # ✅ 위험 단계별 설명 (사전 정의)
@@ -56,21 +56,24 @@ def evaluate_consistency(description, cluster):
     일관성 점수: [숫자]
     """
     try:
-        # 최신 API 형식으로 변경
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # gpt-4가 문제가 된다면 다른 모델 사용
-            messages=[{"role": "user", "content": prompt}],
+        # ✅ 최신 API 호출 방식
+        client = openai.Client()
+
+        response = client.chat.completions.create(
+            model="gpt-4",  # 최신 모델로 변경
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
             temperature=0
         )
         
-        # 일관성 점수 추출
-        match = re.search(r"일관성 점수:\s*(\d+)", response['choices'][0]['message']['content'])
+        result = response.choices[0].message.content.strip()
+        match = re.search(r"일관성 점수:\s*(\d+)", result)
+
         return int(match.group(1)) if match else 0
+
     except openai.error.InvalidRequestError as e:
-        print("Invalid Request Error:", e)
-        return 0
-    except Exception as e:
-        print("Unexpected Error:", e)
+        st.error(f"API 호출 실패: {str(e)}")
         return 0
         
 # 📌 OpenAI GPT-4 기반 위험 설명 생성 함수
@@ -129,28 +132,33 @@ def generate_risk_description(dong_name, df, max_attempts=3, min_score=80):
         - 지역 상권과 부동산 시장에 미치는 영향을 포함해서 전망을 이야기해주세요.
         """
 
-        # OpenAI API 호출
-        response =  openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",  # 또는 gpt-4 사용 가능
-        messages=[
-            {"role": "system", "content": "당신은 서울의 젠트리피케이션과 상권 변화를 분석하는 전문가입니다."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.2  # 온도를 낮춰서 더 예측 가능한 답변 생성
-        )
-        generated_text = response['choices'][0]['message']['content'].strip()
+        try:
+            # 최신 API 호출 방식
+            response = client.chat.completions.create(
+                model="gpt-4",  # 필요에 따라 gpt-3.5-turbo로 변경 가능
+                messages=[
+                    {"role": "system", "content": "당신은 서울의 젠트리피케이션과 상권 변화를 분석하는 전문가입니다."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.2
+            )
 
-        # 📏 평가 수행
-        factual_score = evaluate_factual_accuracy(generated_text, dong_info)
-        consistency_score = evaluate_consistency(generated_text, cluster)
+            generated_text = response.choices[0].message.content.strip()
 
-        print(f"🔍 [시도 {attempt + 1}] 사실성: {factual_score}점 | 일관성: {consistency_score}점")
+            # 🔍 평가 수행
+            factual_score = evaluate_factual_accuracy(generated_text, dong_info)
+            consistency_score = evaluate_consistency(generated_text, cluster)
 
-        # ✅ 기준 충족 시 출력
-        if factual_score >= min_score and consistency_score >= min_score:
-            return generated_text
+            print(f"🔍 [시도 {attempt + 1}] 사실성: {factual_score}점 | 일관성: {consistency_score}점")
 
-    # ❌ 기준 미달 시 실패 메시지
+            # ✅ 기준 충족 시 반환
+            if factual_score >= min_score and consistency_score >= min_score:
+                return generated_text
+
+        except openai.APIError as e:
+            st.error(f"API 호출 실패: {str(e)}")
+            return "⚠️ OpenAI API 호출에 실패했습니다."
+
+    # ❌ 기준 미달 시 실패 메시지 반환
     return f"⚠️ '{dong_name}'의 설명을 {max_attempts}번 시도했으나, 사실성({min_score}점)과 일관성({min_score}점) 기준을 만족하지 못했습니다."
-
 
