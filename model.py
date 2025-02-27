@@ -53,9 +53,6 @@ def evaluate_consistency(description, cluster):
     일관성 점수: [숫자]
     """
     try:
-        # ✅ 최신 API 호출 방식
-        client = openai.Client()
-
         response = openai.ChatCompletion.create(
             model="gpt-4",  # 최신 모델로 변경
             messages=[
@@ -64,7 +61,7 @@ def evaluate_consistency(description, cluster):
             temperature=0
         )
         
-        result = response.choices[0].message.content.strip()
+        result = response['choices'][0]['message']['content'].strip()
         match = re.search(r"일관성 점수:\s*(\d+)", result)
 
         return int(match.group(1)) if match else 0
@@ -140,7 +137,7 @@ def generate_risk_description(dong_name, df, max_attempts=3, min_score=80):
                 temperature=0.2
             )
 
-            generated_text = response.choices[0].message.content.strip()
+            generated_text = response['choices'][0]['message']['content'].strip()
 
             # 🔍 평가 수행
             factual_score = evaluate_factual_accuracy(generated_text, dong_info)
