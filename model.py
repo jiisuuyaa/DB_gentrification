@@ -56,7 +56,7 @@ def evaluate_consistency(description, cluster):
         # ✅ 최신 API 호출 방식
         client = openai.Client()
 
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4",  # 최신 모델로 변경
             messages=[
                 {"role": "user", "content": prompt}
@@ -131,7 +131,7 @@ def generate_risk_description(dong_name, df, max_attempts=3, min_score=80):
 
         try:
             # 최신 API 호출 방식
-            response = client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4",  # 필요에 따라 gpt-3.5-turbo로 변경 가능
                 messages=[
                     {"role": "system", "content": "당신은 서울의 젠트리피케이션과 상권 변화를 분석하는 전문가입니다."},
