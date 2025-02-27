@@ -1,7 +1,7 @@
 streamlit
 pandas
 matplotlib
-koreanize-matplotlib
+koreanize-matplotlib==1.1.1
 folium
 streamlit-folium
 geopandas
