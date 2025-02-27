@@ -11,14 +11,9 @@ import streamlit as st
 # 📂 .env 파일에서 환경 변수 로드
 load_dotenv()
 
-# 🔑 OpenAI API 클라이언트 초기화
-client = openai.Client(api_key=st.secrets["openai"]["api_key"])
+openai.api_key = st.secrets["openai"]["api_key"]
+client = openai.api_key  # 기존 방식으로 호출
 
-# 🔑 OpenAI API 키 불러오기
-# openai.api_key = st.secrets["openai"]["api_key"]
-
-# # 🔹 OpenAI 클라이언트 설정
-# client = openai.api_key
 
 # 📂 XGBoost 모델 불러오기
 xgb_clf  = joblib.load("xgboost_model.pkl")
