@@ -91,4 +91,4 @@ def generate_ai_risk_description(risk_level, region_name, gentrification_index, 
     temperature=0.2  # 온도를 낮춰서 더 예측 가능한 답변 생성
 )
 
-    return response.choices[0].message.content.strip()
+    return response['choices'][0]['message']['content'].strip()
