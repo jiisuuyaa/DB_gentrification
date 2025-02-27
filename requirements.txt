@@ -9,4 +9,6 @@ shapely
 joblib
 xgboost
 scikit-learn
-openai==0.28
+openai==1.2.3  # 최신 버전!
+setuptools==68.0.0
+python-dotenv
