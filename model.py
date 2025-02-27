@@ -8,11 +8,8 @@ import streamlit as st
 # .env 파일에서 환경 변수 로드
 load_dotenv()
 
-# OpenAI API 키 불러오기
 openai.api_key = st.secrets["openai"]["api_key"]
-
-# # OpenAI 클라이언트 설정
-# client = openai.api_key
+client = openai.api_key  # 기존 방식으로 호출
 
 
 # ✅ 위험 단계별 설명 (사전 정의)
